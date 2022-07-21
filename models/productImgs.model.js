@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../db/db.config");
 
-const productImg = db.define( 'productImg', {
+const ProductImg = db.define( 'productImg', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -25,5 +25,5 @@ const productImg = db.define( 'productImg', {
 })
 
 module.exports = {
-    productImg
+    ProductImg
 }

@@ -7,6 +7,10 @@ const Category = db.define( 'category', {
         autoIncrement: true,
         allowNull: false
     },
+    productId:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     name: { 
         type: DataTypes.STRING,
         allowNull: false

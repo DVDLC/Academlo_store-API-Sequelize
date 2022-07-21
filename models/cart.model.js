@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../db/db.config");
 
-const cart = db.define( 'cart', {
+const Cart = db.define( 'cart', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -22,6 +22,6 @@ const cart = db.define( 'cart', {
 })
 
 module.exports = {
-    cart
+    Cart
 }
 

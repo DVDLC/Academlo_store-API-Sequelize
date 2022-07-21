@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../db/db.config");
 
-const order = db.define( 'order', {
+const Order = db.define( 'order', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -30,5 +30,5 @@ const order = db.define( 'order', {
 })
 
 module.exports = {
-    order
+    Order
 }
