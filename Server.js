@@ -2,6 +2,7 @@
 require( 'dotenv' ).config()
 // Libraries
 const express = require('express')
+const { db } = require('./db/db.config')
 const { ApiError } = require('./utils/app-error-handler')
 const { globalErrorHandler } = require('./utils/globalerror-handler')
 const { HttpStatusCode } = require('./utils/http-statusCode')
@@ -61,7 +62,15 @@ class Server{
     }
 
     async dbConnection(){
-
+        try{
+            await Promise.all([
+                db.authenticate(),
+                db.sync({ /* force: true */ })
+            ])
+            console.log( 'DB authenticated and sync' )
+        }catch( err ){
+            console.log( 'Something went wrong', err )
+        }
     }
 
     listen(){

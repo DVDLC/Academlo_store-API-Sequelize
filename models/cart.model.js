@@ -1,0 +1,27 @@
+const { db, DataTypes } = require("../db/db.config");
+
+const cart = db.define( 'cart', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    status:{
+        type: DataTypes.STRING(6),
+        allowNull: false,
+        defaultValue: 'empty',
+        validate:{
+            isIn: [[ 'active', 'empty' ]]
+        }
+    }
+})
+
+module.exports = {
+    cart
+}
+
