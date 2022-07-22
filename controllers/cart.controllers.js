@@ -18,7 +18,7 @@ const updateCart = catchAsync(( req, res = response, next ) => {
 const deleteProductInCart = catchAsync(( req, res = response, next ) => {
     res.status( 200 ).json({
         ok: true,
-        msg: 'DELETE - delete cart'
+        msg: 'DELETE - delete product in cart'
     })
 })
 

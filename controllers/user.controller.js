@@ -25,7 +25,7 @@ const updateUserInfo = catchAsync(( req, res, next ) => {
 const DeleteUser = catchAsync(( req, res, next ) => {
     res.status( 200 ).json({
         ok: true,
-        status: 'PATCH - update user info'
+        status: 'DELETE - delete user'
     })
 })
 

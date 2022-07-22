@@ -12,9 +12,9 @@ const routes = Router()
 
 routes.get( '/', getAllActiveProducts )
 
-routes.get( '/:id', getActiveProduct )
-
 routes.get( '/categories', getAllCategories )
+
+routes.get( '/:id', getActiveProduct )
 
 // Protect routes
 /*

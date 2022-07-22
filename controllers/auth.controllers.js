@@ -1,20 +1,42 @@
 // Libraries
 const { response } = require("express");
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 // Models
+const { User } = require("../models/user.model");
 // Utils
 const { catchAsync } = require("../utils/try-catch.utils");
 
-const signin = catchAsync(( req, res = response, next ) => {
+const signin =  catchAsync(async( req, res = response, next ) => {
+
+    let { password, ...props } = req.body
+
+    const salt = bcrypt.genSaltSync( 10 )
+    password = bcrypt.hashSync( password, salt )
+
+    const newUser = await User.build({ ...props, password })
+    await newUser.save()
+
+    newUser.password = undefined
+
     res.status( 200 ).json({
-        ok: true,
-        msg: 'POST - signin'
+        newUser
     })
 })
 
-const login = catchAsync(( req, res = response, next ) => {
+const login = catchAsync( async( req, res = response, next ) => {
+
+    const user = req.userLogin
+    const payload = { id: user.id }
+
+    const token = jwt.sign( payload, process.env.JWT_SECRET_KEY )
+
     res.status( 200 ).json({
-        ok: true,
-        msg: 'POST - login'
+        userlogin: {
+            username: user.userName,
+            email: user.email
+        },
+        token
     })
 })
 

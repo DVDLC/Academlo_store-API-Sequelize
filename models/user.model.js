@@ -8,7 +8,7 @@ const User = db.define( 'user', {
         allowNull: false
     },
     userName: { 
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(20),
         allowNull: false
     },
     email: {
@@ -17,7 +17,7 @@ const User = db.define( 'user', {
         allowNull: false
     },
     password: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING,
         allowNull: false
     }, 
     role: {
@@ -25,7 +25,9 @@ const User = db.define( 'user', {
         allowNull: false,
         defaultValue: 'user',
         validate: {
-            isIn: [[ 'admin', 'user', 'sales' ]]
+            isIn: { 
+                args: [[ 'admin', 'user', 'sales' ]]
+            }
         }
     },
     status: {
@@ -33,7 +35,9 @@ const User = db.define( 'user', {
         allowNull: false,
         defaultValue: 'active',
         validate: {
-            isIn: [[ 'active', 'disabled' ]]
+            isIn: {
+                args: [[ 'active', 'disabled' ]]
+            } 
         }
     }
 })
