@@ -25,6 +25,18 @@ const userExists = catchAsync( async( req, res, next ) => {
     next()
 })
 
+const emailValidation = ( req, res, next ) => {
+
+    const regex = /\S+@\S+\.\S+/
+    const { email } = req.body
+
+    const isValidEmail = regex.test( email )
+
+    if( !isValidEmail ) return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'Email is invalid' ) )
+
+    next()
+}
+
 const validateSignInParams = ( req, res, next ) => {
     const { userName, email, password } = req.body
 
@@ -35,20 +47,15 @@ const validateSignInParams = ( req, res, next ) => {
     }else if( !password || password.length === 0 ){
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'Password is required' ) )
     }else if( email.length > 0 ){
-        return next( emailValidation( email ) )
+        emailValidation( req, res, next )
     }
 
     next()
 }
 
-const emailValidation = ( email ) => {
-    const regex = /\S+@\S+\.\S+/
-    const isValidEmail = regex.test( email )
-
-    if( !isValidEmail ) return new ApiError( HttpStatusCode.BAD_REQUEST, 'Email is invalid' )
-}
 
 module.exports = {
     userExists,
-    validateSignInParams
+    validateSignInParams,
+    emailValidation
 }

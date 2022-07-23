@@ -11,16 +11,31 @@ const {
     getAllOrders, 
     getOrderByID 
 } = require('../controllers/order.controller');
+// Middlewares
+const { protectSession, protectUserAccount } = require('../middlewares/jwt.middlewares');
+const { verifyIfIsSalesRole, verifyParamsInUpdate } = require('../middlewares/user.middlewares');
+const { emailValidation } = require('../middlewares/auth.middlewares');
 
 const router = Router()
 
-router.get( '/', getAllActiveUsers )
+if( process.env.NODE_ENV === 'development' ){
+    router.get( '/', getAllActiveUsers )
+}
 
-router.patch( '/:id', updateUserInfo )
+// Routes protected by token, protectSession & sales role
+router.use( [ protectSession ] )
 
-router.delete( '/:id', DeleteUser )
+router.route( '/:id' )
+    .patch( [ 
+        protectUserAccount,
+        verifyParamsInUpdate,
+        emailValidation
+    ], updateUserInfo )
+    .delete( [ protectUserAccount ], DeleteUser )
 
-router.get( '/me', getUserProductsForSale )
+router.get( '/me',[
+    verifyIfIsSalesRole
+], getUserProductsForSale )
 
 router.get( '/orders', getAllOrders )
 

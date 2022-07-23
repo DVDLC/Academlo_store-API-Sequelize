@@ -31,7 +31,15 @@ const globalErrorHandler = (err, req, res, next) => {
     const handlerSQvalidationErrStatus = () => {
         return new ApiError( HttpStatusCode.BAD_REQUEST, 'Must be a valid status' )
     }
+
+    const handlerUniqueError = () => {
+        return new ApiError( HttpStatusCode.BAD_REQUEST, 'the email already exist' )
+    }
     
+    const handleJWTInvalid = () => {
+        return new ApiError( HttpStatusCode.BAD_REQUEST, 'Invalid token' )
+    }
+
     if( process.env.NODE_ENV === 'development' ) {
         sendErrorDev( err, req, next )
         
@@ -41,10 +49,16 @@ const globalErrorHandler = (err, req, res, next) => {
         // Sequelize validation error
         const [ errorItem ] = ( error.errors )
 
+        console.log( error )
+
         if( errorItem.type === 'Validation error' && errorItem.path === 'role' ){
             error = handlerSQvalidationErrRole()
         }else if( errorItem.type === 'Validation error' && errorItem.path === 'status' ){
             error = handlerSQvalidationErrStatus()
+        }else if( error.name === 'SequelizeUniqueConstraintError' ){
+            error = handlerUniqueError()
+        }else if( error.message === 'invalid signature' ){
+            error = handleJWTInvalid()
         }
 
         sendErrorProd( error, req, next ) 

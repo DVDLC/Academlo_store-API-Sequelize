@@ -2,8 +2,11 @@
 require( 'dotenv' ).config()
 // Libraries
 const express = require('express')
+const cors = require('cors')
+// DateBase
 const { db } = require('./db/db.config')
 const { dbRelations } = require('./db/db.relations')
+// Utils
 const { ApiError } = require('./utils/app-error-handler')
 const { globalErrorHandler } = require('./utils/globalerror-handler')
 const { HttpStatusCode } = require('./utils/http-statusCode')
@@ -37,6 +40,9 @@ class Server{
     }
 
     middlewares(){
+
+        this.app.use( cors() )
+
         this.app.use( express.json() )
     }
 

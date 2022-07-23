@@ -29,7 +29,11 @@ const login = catchAsync( async( req, res = response, next ) => {
     const user = req.userLogin
     const payload = { id: user.id }
 
-    const token = jwt.sign( payload, process.env.JWT_SECRET_KEY )
+    const token = jwt.sign( 
+        payload, 
+        process.env.JWT_SECRET_KEY, 
+        { expiresIn: '12h' } 
+    )
 
     res.status( 200 ).json({
         userlogin: {
