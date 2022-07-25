@@ -12,12 +12,13 @@ const Product = db.define( 'product', {
         allowNull: false
     },
     description: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.STRING(1500),
         allowNull: false
     },
     quantity: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 1
     }, 
     price: {
         type: DataTypes.FLOAT,
@@ -34,6 +35,7 @@ const Product = db.define( 'product', {
     status: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'active',
         validate: {
             isIn: [[ 'active', 'outofstock', 'inactive' ]]
         }

@@ -34,7 +34,18 @@ const verifyParams = ( req, res, next) => {
     next()
 }
 
+const verifyIfCategoryExistInPC = catchAsync(async( req, res, next ) => {
+    const { categoryId } = req.body
+
+    const categoryExist = await Category.findOne({ where: { id: categoryId } })
+    if( !categoryExist ) return next( new ApiError( HttpStatusCode.BAD_REQUEST, `This category does not exist` ) )
+
+
+    next()
+})
+
 module.exports = { 
     categoryIsAlreadyExist,
-    verifyParams
+    verifyParams,
+    verifyIfCategoryExistInPC
 }

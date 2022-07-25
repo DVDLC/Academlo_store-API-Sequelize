@@ -10,36 +10,40 @@ const {
     deleteProduct 
 } = require("../controllers/products.controller");
 // Middlewares
-const { categoryIsAlreadyExist, verifyParams } = require("../middlewares/categories.middlewares");
+const { categoryIsAlreadyExist, verifyParams, verifyIfCategoryExistInPC } = require("../middlewares/categories.middlewares");
 const { protectSession } = require("../middlewares/jwt.middlewares");
+const { userAlreadyPostProduct, verifyProductsParams, productExistByID } = require("../middlewares/products.middlewares");
 const { verifyRole } = require("../middlewares/user.middlewares");
 
 const routes = Router()
 
+// No protected routes
 routes.get( '/', getAllActiveProducts )
 
 routes.get( '/categories', getAllCategories )
 
-routes.get( '/:id', getActiveProduct )
+routes.get( '/:id', productExistByID, getActiveProduct )
 
-// Protect routes
-/*
-    TODO: 
-        · User role should be "sales"
-        · If user update or delete verify if product exist
-*/
-
+// Protected routes
 routes.use([ 
     protectSession,
     verifyRole 
 ])
 
-routes.post( '/', createProduct )
+routes.post( '/', [
+    verifyProductsParams,
+    verifyIfCategoryExistInPC,
+    userAlreadyPostProduct
+], createProduct )
 
-routes.patch( '/:id', updateProduct )
 
-routes.delete( '/:id', deleteProduct )
+routes.patch( '/:id', [ 
+    productExistByID 
+], updateProduct )
 
+routes.delete( '/:id', [ 
+    productExistByID 
+], deleteProduct )
 
 routes.post( '/categories', [
     verifyParams,

@@ -40,6 +40,10 @@ const globalErrorHandler = (err, req, res, next) => {
         return new ApiError( HttpStatusCode.BAD_REQUEST, 'Invalid token' )
     }
 
+    const handleInvalidParams = () => {
+        return new ApiError( HttpStatusCode.BAD_REQUEST, 'Invalid param' )
+    }
+
     const handleSQLDBerror = () => {
         return new ApiError( HttpStatusCode.INTERNAL_SERVER, 'Something went wrong - talk with the admin' )
     }
@@ -63,7 +67,11 @@ const globalErrorHandler = (err, req, res, next) => {
             error = handlerUniqueError()
         }else if( error.message === 'invalid signature' ){
             error = handleJWTInvalid()
-        }else if( error.error.name === 'SequelizeDatabaseError' )
+        }else if( error.error.name === 'SequelizeDatabaseError' ){
+            error = handleSQLDBerror()
+        }else if( error.message === `invalid input syntax for type integer: \"${req.params.id}\"` ){
+            error = handleInvalidParams()
+        }
 
         sendErrorProd( error, req, next ) 
     }
