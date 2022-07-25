@@ -1,4 +1,6 @@
+// Libraries
 const { Router } = require("express");
+// Controllers
 const { getAllCategories, createCategorie, updateCategorie } = require("../controllers/categories.controllers");
 const { 
     getAllActiveProducts, 
@@ -7,6 +9,10 @@ const {
     updateProduct, 
     deleteProduct 
 } = require("../controllers/products.controller");
+// Middlewares
+const { categoryIsAlreadyExist, verifyParams } = require("../middlewares/categories.middlewares");
+const { protectSession } = require("../middlewares/jwt.middlewares");
+const { verifyRole } = require("../middlewares/user.middlewares");
 
 const routes = Router()
 
@@ -22,19 +28,27 @@ routes.get( '/:id', getActiveProduct )
         · User role should be "sales"
         · If user update or delete verify if product exist
 */
+
+routes.use([ 
+    protectSession,
+    verifyRole 
+])
+
 routes.post( '/', createProduct )
 
 routes.patch( '/:id', updateProduct )
 
 routes.delete( '/:id', deleteProduct )
 
-/* 
-    TODO:
-     · Verify if user is admin and active  
-*/
 
-routes.post( '/categories', createCategorie )
+routes.post( '/categories', [
+    verifyParams,
+    categoryIsAlreadyExist
+], createCategorie )
 
-routes.patch( '/categories/:id', updateCategorie )
+routes.patch( '/categories/:id', [
+    verifyParams,
+    categoryIsAlreadyExist
+], updateCategorie )
 
 module.exports = routes

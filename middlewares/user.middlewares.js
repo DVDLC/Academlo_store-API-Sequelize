@@ -3,13 +3,14 @@ const { ApiError } = require("../utils/app-error-handler")
 const { HttpStatusCode } = require("../utils/http-statusCode")
 const { catchAsync } = require("../utils/try-catch.utils")
 
-const verifyIfIsSalesRole = catchAsync( async ( req, res, next ) => {
+const verifyRole = catchAsync( async ( req, res, next ) => {
 
     const { id } = req.sessionUser
+
     const query = { id, status: 'active', role: 'sales' }
 
-    const isUserRoleSales = await User.findOne({ where: query })
-    if( !isUserRoleSales ) return next( new ApiError( HttpStatusCode.UNAUTHORIZATE, 'You are not authorized to do this' ) )
+    const isUserRole = await User.findOne({ where: query })
+    if( !isUserRole ) return next( new ApiError( HttpStatusCode.UNAUTHORIZATE, 'You are not authorized to do this' ) )
 
     next()
 
@@ -27,6 +28,6 @@ const verifyParamsInUpdate = ( req, res, next ) => {
 
 
 module.exports = {
-    verifyIfIsSalesRole,
+    verifyRole,
     verifyParamsInUpdate
 }

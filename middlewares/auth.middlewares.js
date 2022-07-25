@@ -25,6 +25,8 @@ const userExists = catchAsync( async( req, res, next ) => {
     next()
 })
 
+// TODO: TENGO un error por enviar mutiples next()
+
 const emailValidation = ( req, res, next ) => {
 
     const regex = /\S+@\S+\.\S+/
@@ -47,7 +49,7 @@ const validateSignInParams = ( req, res, next ) => {
     }else if( !password || password.length === 0 ){
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'Password is required' ) )
     }else if( email.length > 0 ){
-        emailValidation( req, res, next )
+        return emailValidation( req, res, next )
     }
 
     next()

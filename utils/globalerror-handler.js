@@ -40,17 +40,21 @@ const globalErrorHandler = (err, req, res, next) => {
         return new ApiError( HttpStatusCode.BAD_REQUEST, 'Invalid token' )
     }
 
+    const handleSQLDBerror = () => {
+        return new ApiError( HttpStatusCode.INTERNAL_SERVER, 'Something went wrong - talk with the admin' )
+    }
+
     if( process.env.NODE_ENV === 'development' ) {
         sendErrorDev( err, req, next )
         
     }if( process.env.NODE_ENV === 'production' ){
         
         let error = { ...err }
+
         // Sequelize validation error
-        const [ errorItem ] = ( error.errors )
-
-        console.log( error )
-
+        const [ errorItem ] = ( error.errors ) || null
+       
+    
         if( errorItem.type === 'Validation error' && errorItem.path === 'role' ){
             error = handlerSQvalidationErrRole()
         }else if( errorItem.type === 'Validation error' && errorItem.path === 'status' ){
@@ -59,7 +63,7 @@ const globalErrorHandler = (err, req, res, next) => {
             error = handlerUniqueError()
         }else if( error.message === 'invalid signature' ){
             error = handleJWTInvalid()
-        }
+        }else if( error.error.name === 'SequelizeDatabaseError' )
 
         sendErrorProd( error, req, next ) 
     }

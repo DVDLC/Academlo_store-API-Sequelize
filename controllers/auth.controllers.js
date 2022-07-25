@@ -15,11 +15,12 @@ const signin =  catchAsync(async( req, res = response, next ) => {
     password = bcrypt.hashSync( password, salt )
 
     const newUser = await User.build({ ...props, password })
-    await newUser.save()
+    await newUser.save() 
 
     newUser.password = undefined
 
     res.status( 200 ).json({
+        ok: true,
         newUser
     })
 })

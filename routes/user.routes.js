@@ -13,7 +13,7 @@ const {
 } = require('../controllers/order.controller');
 // Middlewares
 const { protectSession, protectUserAccount } = require('../middlewares/jwt.middlewares');
-const { verifyIfIsSalesRole, verifyParamsInUpdate } = require('../middlewares/user.middlewares');
+const { verifyRole, verifyParamsInUpdate } = require('../middlewares/user.middlewares');
 const { emailValidation } = require('../middlewares/auth.middlewares');
 
 const router = Router()
@@ -34,7 +34,7 @@ router.route( '/:id' )
     .delete( [ protectUserAccount ], DeleteUser )
 
 router.get( '/me',[
-    verifyIfIsSalesRole
+    verifyRole
 ], getUserProductsForSale )
 
 router.get( '/orders', getAllOrders )

@@ -7,17 +7,19 @@ const Category = db.define( 'category', {
         autoIncrement: true,
         allowNull: false
     },
-    productId:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     name: { 
         type: DataTypes.STRING,
         allowNull: false
     },
     status: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'active',
+        validate:{
+            isIn: {
+                args: [[ 'active', 'disabled' ]]
+            }
+        }
     }
 })
 
