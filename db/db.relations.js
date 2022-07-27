@@ -26,8 +26,8 @@ const dbRelations = () => {
     Product.hasOne( ProductInCart, { foreignKey: 'productId' } )
     ProductInCart.belongsTo( Product, { foreignKey: 'id' } )
 
-    Product.hasOne( Category, { foreignKey: 'id' } )
-    Category.belongsTo( Product, { foreignKey: 'id' } )
+    Category.hasMany( Product, { foreignKey: 'id' } )
+    Product.belongsTo( Category, { foreignKey: 'categoryId' } )
 
     // Cart relations
     Cart.hasOne( Order, { foreignKey: 'cartId' } )

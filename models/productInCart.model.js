@@ -22,8 +22,9 @@ const ProductInCart = db.define( 'productInCart', {
     status: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'active',
         validate: {
-            isIn: [[ 'active', 'cancelled' ]]
+            isIn: [[ 'active', 'removed' ]]
         }
     }
 })

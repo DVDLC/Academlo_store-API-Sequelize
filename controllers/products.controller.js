@@ -15,7 +15,7 @@ const getAllActiveProducts = catchAsync(async( req, res = response, next ) => {
         Product.count({ where: query }),
         Product.findAll({ 
             where: query,
-            attributes: [ 'id', 'title', 'price' ],
+            attributes: [ 'id', 'title', 'price', 'quantity', 'categoryId' ],
             offset,
             limit,
             include: [{

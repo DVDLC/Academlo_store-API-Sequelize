@@ -1,18 +1,42 @@
+// Libraries
 const { Router } = require("express");
+// Controllers
 const { 
     addProductToCart, 
     updateCart, 
     deleteProductInCart, 
     purchaseCart 
 } = require("../controllers/cart.controllers");
+// Middlewares
+const { verifyIfProductNotExceedQuantity, verifyCartParams, productInCartExist, productAlreadyExistInCart } = require("../middlewares/cart.middlewares");
+const { protectSession } = require("../middlewares/jwt.middlewares");
+const { productExistByID } = require("../middlewares/products.middlewares");
 
 const routes = Router()
 
-routes.post( '/add-product', addProductToCart )
+routes.use( protectSession )
 
-routes.patch( '/update-cart', updateCart )
+routes.post( '/add-product', [ 
+    verifyCartParams,
+    productAlreadyExistInCart,
+    verifyIfProductNotExceedQuantity
+], addProductToCart )
 
-routes.delete( '/:productId', deleteProductInCart )
+/*
+    TODO: 
+        De alguna forma recibir el cartId por sessionUser
+        una vez lo recibimos verificamos que exista el product in cart
+        y lo enviamos en la req para que el controlador se haga cargo de actualizarlo
+*/
+
+routes.patch( '/update-cart', [
+    productInCartExist,
+    verifyIfProductNotExceedQuantity
+], updateCart )
+
+routes.delete( '/:id', [
+    productInCartExist
+], deleteProductInCart )
 
 routes.post( '/purchase', purchaseCart )
 

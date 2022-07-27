@@ -72,7 +72,7 @@ class Server{
         try{
             await Promise.all([
                 db.authenticate(),
-                db.sync({ /* force: true */  })
+                db.sync({ /* force: true */ })
             ])
 
             dbRelations()

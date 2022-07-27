@@ -76,13 +76,21 @@ const verifyProductsParams = ( req, res, next ) => {
 const productExistByID = catchAsync( async( req, res, next ) => {
 
     const { id } = req.params
+    const { productId } = req.body
+
     const query = { id, status: 'active' }
+    const query1 = { id: productId, status: 'active' }
+    let product
 
-    const product = await Product.findOne({ where: query })
-
+    if( id ) {
+        product = await Product.findOne({ where: query })
+    } else if ( productId  ) {
+        product = await Product.findOne({ where: query1 })
+    }
+    
     if( !product ) return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'This product does not exist' ) )
-
     req.product = product
+
     next()
 })
 

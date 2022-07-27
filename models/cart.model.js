@@ -16,7 +16,7 @@ const Cart = db.define( 'cart', {
         allowNull: false,
         defaultValue: 'empty',
         validate:{
-            isIn: [[ 'active', 'empty' ]]
+            isIn: [[ 'active', 'empty', 'done' ]]
         }
     }
 })

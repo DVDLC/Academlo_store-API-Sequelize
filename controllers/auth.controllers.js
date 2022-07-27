@@ -4,12 +4,15 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 // Models
 const { User } = require("../models/user.model");
+const { Cart } = require("../models/cart.model");
 // Utils
 const { catchAsync } = require("../utils/try-catch.utils");
+
 
 const signin =  catchAsync(async( req, res = response, next ) => {
 
     let { password, ...props } = req.body
+    let newCart
 
     const salt = bcrypt.genSaltSync( 10 )
     password = bcrypt.hashSync( password, salt )
@@ -20,7 +23,6 @@ const signin =  catchAsync(async( req, res = response, next ) => {
     newUser.password = undefined
 
     res.status( 200 ).json({
-        ok: true,
         newUser
     })
 })
