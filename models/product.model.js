@@ -8,7 +8,7 @@ const Product = db.define( 'product', {
         allowNull: false
     },
     title: { 
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     description: {

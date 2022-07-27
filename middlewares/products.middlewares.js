@@ -42,7 +42,6 @@ const userAlreadyPostProduct = catchAsync( async( req, res, next ) => {
         ))
     }
     
-
     next()
 })
 
@@ -62,12 +61,12 @@ const verifyProductsParams = ( req, res, next ) => {
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'categoryId is required' ) )
     } 
 
-    if( isNaN( price ) ) {
-        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'price is not a number' ) )
-    } else if( isNaN( quantity ) ) {
-        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'quantity is not a number' ) )
-    } else if( isNaN( categoryId ) ) {
-        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'categoryId is not a number' ) )
+    if( isNaN( price ) || price <= 0 ) {
+        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'price incorrect format' ) )
+    } else if( isNaN( quantity ) || quantity <= 0 ) {
+        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'quantity incorrect format' ) )
+    } else if( isNaN( categoryId ) || categoryId <= 0 ) {
+        return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'categoryId incorrect format' ) )
     }
 
     next()

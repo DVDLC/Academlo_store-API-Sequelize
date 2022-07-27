@@ -4,13 +4,13 @@ const { response } = require("express");
 const { Cart } = require("../models/cart.model");
 const { ProductInCart } = require("../models/productInCart.model");
 // Utils
-const { catchAsync } = require("../utils/try-catch.utils");
-const { updateQuantity } = require("../utils/product.util");
 const { Product } = require("../models/product.model");
 const { Order } = require("../models/order.model");
 // Utils
 const { ApiError } = require("../utils/app-error-handler");
 const { HttpStatusCode } = require("../utils/http-statusCode");
+const { catchAsync } = require("../utils/try-catch.utils");
+const { updateQuantity } = require("../utils/product.util");
 
 /*
     TODO: 

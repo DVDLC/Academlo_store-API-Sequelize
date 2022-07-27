@@ -15,6 +15,7 @@ const {
 const { protectSession, protectUserAccount } = require('../middlewares/jwt.middlewares');
 const { verifyRole, verifyParamsInUpdate } = require('../middlewares/user.middlewares');
 const { emailValidation } = require('../middlewares/auth.middlewares');
+const { orderExistByID } = require('../middlewares/order.middlewares');
 
 const router = Router()
 
@@ -31,15 +32,20 @@ router.route( '/:id' )
         verifyParamsInUpdate,
         emailValidation
     ], updateUserInfo )
-    .delete( [ protectUserAccount ], DeleteUser )
+    .delete( [ 
+        protectUserAccount 
+    ], DeleteUser )
 
 router.get( '/me',[
     verifyRole
 ], getUserProductsForSale )
 
-router.get( '/orders', getAllOrders )
+router.get( '/orders', 
+getAllOrders )
 
-router.get( '/orders/:id', getOrderByID )
+router.get( '/orders/:id', [
+    orderExistByID
+], getOrderByID )
 
 
 module.exports = router

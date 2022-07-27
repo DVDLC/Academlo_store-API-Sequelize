@@ -38,7 +38,7 @@ const verifyCartParams = ( req, res, next ) => {
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'quantity is required' ) )
     }
 
-    if( isNaN( productId ) ){
+    if( isNaN( productId ) || productId <= 0 ){
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'productId incorrect format' ) )
     } else if( isNaN( quantity ) ){
         return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'quantity incorrect format' ) )
