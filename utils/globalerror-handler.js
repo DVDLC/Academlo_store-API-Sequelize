@@ -31,10 +31,6 @@ const globalErrorHandler = (err, req, res, next) => {
     const handlerSQvalidationErrStatus = () => {
         return new ApiError( HttpStatusCode.BAD_REQUEST, 'Must be a valid status' )
     }
-
-    const handlerUniqueError = () => {
-        return new ApiError( HttpStatusCode.BAD_REQUEST, 'the email already exist' )
-    }
     
     const handleJWTInvalid = () => {
         return new ApiError( HttpStatusCode.BAD_REQUEST, 'Invalid token' )
@@ -60,19 +56,20 @@ const globalErrorHandler = (err, req, res, next) => {
         let error = { ...err }
 
         // Sequelize validation error
-        const [ errorItem ] = ( error.errors ) || null
-       
-    
-        if( errorItem.type === 'Validation error' && errorItem.path === 'role' ){
-            error = handlerSQvalidationErrRole()
-        }else if( errorItem.type === 'Validation error' && errorItem.path === 'status' ){
-            error = handlerSQvalidationErrStatus()
-        }else if( error.name === 'SequelizeUniqueConstraintError' ){
-            error = handlerUniqueError()
-        }else if( error.message === 'invalid signature' ){
+        if( error.errors ){
+            const [ errorItem ] = ( error.errors )
+
+            if( errorItem.type === 'Validation error' && errorItem.path === 'role' ){
+                error = handlerSQvalidationErrRole()
+            }else if( errorItem.type === 'Validation error' && errorItem.path === 'status' ){
+                error = handlerSQvalidationErrStatus()
+            }else if( error.error.name === 'SequelizeDatabaseError' ){
+                error = handleSQLDBerror()
+            }
+        }
+        
+        if( error.message === 'invalid signature' ){
             error = handleJWTInvalid()
-        }else if( error.error.name === 'SequelizeDatabaseError' ){
-            error = handleSQLDBerror()
         }else if( error.message === `invalid input syntax for type integer: \"${req.params.id}\"` ){
             error = handleInvalidParams()
         }else if( error.message === "Cannot destructure property 'productInCarts' of 'cart' as it is null." ){

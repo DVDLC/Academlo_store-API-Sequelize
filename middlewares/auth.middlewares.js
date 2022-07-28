@@ -55,9 +55,21 @@ const validateSignInParams = ( req, res, next ) => {
     next()
 }
 
+const validateEmailInDB = catchAsync(async(req, res, next) => {
+
+    const { email } = req.body
+    const query = { email, status: 'active' }
+
+    const userAlreadyExist = await User.findOne({ where: query })
+
+    if( userAlreadyExist ) return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'The email is already exist' ) )
+    next()
+})
+
 
 module.exports = {
     userExists,
     validateSignInParams,
-    emailValidation
+    emailValidation,
+    validateEmailInDB
 }
