@@ -36,7 +36,7 @@ const signin =  catchAsync(async( req, res = response, next ) => {
 const login = catchAsync( async( req, res = response, next ) => {
 
     const user = req.userLogin
-    const payload = { id: user.id }
+    const payload = { id: user.id, email: user.email }
 
     const token = jwt.sign( 
         payload, 

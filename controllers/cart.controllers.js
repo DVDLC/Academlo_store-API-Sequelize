@@ -11,6 +11,7 @@ const { ApiError } = require("../utils/app-error-handler");
 const { HttpStatusCode } = require("../utils/http-statusCode");
 const { catchAsync } = require("../utils/try-catch.utils");
 const { updateQuantity } = require("../utils/product.util");
+const { Email } = require("../email/email.config");
 
 
 const addProductToCart = catchAsync(async( req, res = response, next ) => {
@@ -47,8 +48,7 @@ const addProductToCart = catchAsync(async( req, res = response, next ) => {
 
     res.status( 200 ).json({
         productInCart,
-        userCart,
-        isProductAlreadyExistInCart
+        userCart
     })
 })
 
@@ -97,6 +97,7 @@ const purchaseCart = catchAsync(async( req, res = response, next ) => {
 
     const { sessionUser } = req
     const queryCart = { userId: sessionUser.id, status: 'active' }
+    const emailInfo = []
 
     // Get the cart to know which products are active
     const cart = await Cart.findOne({ 
@@ -114,13 +115,22 @@ const purchaseCart = catchAsync(async( req, res = response, next ) => {
     let totalPrice = await Promise.all( 
         productInCarts.map( async ( product ) =>  {
             const products = await Product.findOne({ 
-                where: { id: product.productId }
+                where: { id: product.productId },
             })
+
+            // Saving important info for the email
+            const { title, price } = products
+    
+            let importantInfo = { title, price, quantity: product.quantity }
+            emailInfo.push( importantInfo )
+
+            // Return the total price
             return product.quantity * products.price
     }))
 
     const reducer = (accumulator, curr) => accumulator + curr
     totalPrice = totalPrice.reduce( reducer )
+
 
     // Create "Order" model and update the cart status to: done
     const orderQuery = { userId: sessionUser.id, cartId: cart.id, totalPrice }
@@ -131,9 +141,11 @@ const purchaseCart = catchAsync(async( req, res = response, next ) => {
     await cart.update({ status: 'done' })
 
     // Send email with the order info()
+    await new Email( sessionUser.email )
+        .sendOrder( emailInfo, totalPrice )
 
     res.status( 200 ).json({
-        order
+       order
     })
 })
 

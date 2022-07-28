@@ -6,3 +6,14 @@ block emailContent
         .logo
             img(src="https://firebasestorage.googleapis.com/v0/b/api-store-c0fe0.appspot.com/o/logo%2Fpugjs.png?alt=media&token=af22dc10-decf-46af-9fd0-04d57fb86aba")
     br
+    each product in products
+        ul.productContainer
+            li.product #{product.title} 
+            ul.infoContainer
+                li.product.info.price $ #{product.price} 
+                li.product.info #{product.quantity}
+                li.product.info $ #{product.price * product.quantity}
+    hr
+    div.totalContainer
+        span.totalPrice $ #{ totalPrice }
+    include footer

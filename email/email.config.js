@@ -58,11 +58,11 @@ class Email{
         )
     }
 
-    async sendOrder( products ){
+    async sendOrder( products, totalPrice ){
         await this.send( 
             'newOrder',
             'TQ for placing your order',
-            { products }
+            { products, totalPrice }
         )
     }
 }

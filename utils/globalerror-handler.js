@@ -48,6 +48,10 @@ const globalErrorHandler = (err, req, res, next) => {
         return new ApiError( HttpStatusCode.INTERNAL_SERVER, 'Something went wrong - talk with the admin' )
     }
 
+    const handleEmptyCart = () => {
+        return new ApiError( HttpStatusCode.BAD_REQUEST, 'Your cart is empty' )
+    }
+
     if( process.env.NODE_ENV === 'development' ) {
         sendErrorDev( err, req, next )
         
@@ -71,6 +75,8 @@ const globalErrorHandler = (err, req, res, next) => {
             error = handleSQLDBerror()
         }else if( error.message === `invalid input syntax for type integer: \"${req.params.id}\"` ){
             error = handleInvalidParams()
+        }else if( error.message === "Cannot destructure property 'productInCarts' of 'cart' as it is null." ){
+            error = handleEmptyCart()
         }
 
         sendErrorProd( error, req, next ) 

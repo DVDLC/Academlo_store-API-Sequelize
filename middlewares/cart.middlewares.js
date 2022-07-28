@@ -24,11 +24,6 @@ const verifyIfProductNotExceedQuantity = ( req, res, next ) => {
     next()
 }
 
-/* 
-    TODO: 
-        Verificar que los parametros no sean negativos
-*/
-
 const verifyCartParams = ( req, res, next ) => {
     const { productId, quantity } = req.body
 
@@ -116,9 +111,21 @@ const productAlreadyExistInCart = catchAsync( async( req, res, next ) => {
     next()
 })
 
+const verifyCartExist = catchAsync( async( req, res, next ) => {
+
+    const { sessionUser } = req
+    const queryCart = { userId: sessionUser.id, status: 'active' }
+
+    const cart = await Cart.findOne({ where: queryCart })
+
+    if( !cart ) return next( new ApiError( HttpStatusCode.BAD_REQUEST, 'Your cart is empty' ))
+    next()
+})
+
 module.exports = {
     verifyCartParams,
     productInCartExist,
     verifyIfProductNotExceedQuantity,
-    productAlreadyExistInCart
+    productAlreadyExistInCart,
+    verifyCartExist
 }
