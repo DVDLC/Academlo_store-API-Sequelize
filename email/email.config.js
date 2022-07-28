@@ -11,7 +11,17 @@ class Email{
     }
 
     // Connect to mail service
-    newTransport(){
+    newTransport(){ 
+        if( process.env.NODE_ENV === 'production'){
+            // Connect to SendGrid
+            return nodemailer.createTransport({
+                service: 'SendGrid',
+                auth: {
+                  user: 'apikey',
+                  pass: process.env.SENDGRID_KEY
+                }
+            })
+        }
         return nodemailer.createTransport({
             host: "smtp.mailtrap.io",
             port: 2525,
