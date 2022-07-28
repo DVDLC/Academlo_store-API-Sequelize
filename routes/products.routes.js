@@ -10,10 +10,16 @@ const {
     deleteProduct 
 } = require("../controllers/products.controller");
 // Middlewares
-const { categoryIsAlreadyExist, verifyParams, verifyIfCategoryExistInPC } = require("../middlewares/categories.middlewares");
 const { protectSession } = require("../middlewares/jwt.middlewares");
-const { userAlreadyPostProduct, verifyProductsParams, productExistByID } = require("../middlewares/products.middlewares");
 const { verifyRole } = require("../middlewares/user.middlewares");
+const { 
+    categoryIsAlreadyExist, 
+    verifyParams, 
+    verifyIfCategoryExistInPC 
+} = require("../middlewares/categories.middlewares");
+const { userAlreadyPostProduct, verifyProductsParams, productExistByID } = require("../middlewares/products.middlewares");
+// utils
+const { upload } = require("../utils/upload.utils");
 
 const routes = Router()
 
@@ -31,6 +37,7 @@ routes.use([
 ])
 
 routes.post( '/', [
+    upload.array( 'img', 3 ),
     verifyProductsParams,
     verifyIfCategoryExistInPC,
     userAlreadyPostProduct

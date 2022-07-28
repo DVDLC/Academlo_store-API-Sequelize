@@ -3,6 +3,7 @@ require( 'dotenv' ).config()
 // Libraries
 const express = require('express')
 const cors = require('cors')
+const path = require('node:path');
 // DateBase
 const { db } = require('./db/db.config')
 const { dbRelations } = require('./db/db.relations')
@@ -44,6 +45,13 @@ class Server{
         this.app.use( cors() )
 
         this.app.use( express.json() )
+
+        // Set template engine
+        this.app.set( 'view engine', 'pug' )
+        this.app.set( 'views', path.join( __dirname, 'views' ) )
+
+        // Serving static files
+        this.app.use( express.static( 'public' ) )
     }
 
     routes(){

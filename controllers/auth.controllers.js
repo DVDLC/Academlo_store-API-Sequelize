@@ -7,12 +7,12 @@ const { User } = require("../models/user.model");
 const { Cart } = require("../models/cart.model");
 // Utils
 const { catchAsync } = require("../utils/try-catch.utils");
+const { Email } = require("../email/email.config");
 
 
 const signin =  catchAsync(async( req, res = response, next ) => {
 
     let { password, ...props } = req.body
-    let newCart
 
     const salt = bcrypt.genSaltSync( 10 )
     password = bcrypt.hashSync( password, salt )
@@ -21,6 +21,12 @@ const signin =  catchAsync(async( req, res = response, next ) => {
     await newUser.save() 
 
     newUser.password = undefined
+
+    // Send a welcome Email to client
+    if( newUser.role === 'user' || newUser.role === 'sales' ) {
+        await new Email( newUser.email )
+        .sendWelcome( newUser.userName )
+    }
 
     res.status( 200 ).json({
         newUser

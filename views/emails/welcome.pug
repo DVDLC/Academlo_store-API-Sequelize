@@ -1,0 +1,16 @@
+extends base
+
+block emailContent
+    nav.navbar
+        // LOGO
+        .logo
+            img(src="https://firebasestorage.googleapis.com/v0/b/api-store-c0fe0.appspot.com/o/logo%2Fpugjs.png?alt=media&token=af22dc10-decf-46af-9fd0-04d57fb86aba")
+    br
+    div.emailcontainer
+        h1.welcome Welcome!
+        div.welcomecontainer 
+            p Welcome #{name} and thanks for signing up! 
+            br
+            p Cheers,
+            p The "Brand name" Team
+    include footer

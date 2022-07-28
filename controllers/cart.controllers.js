@@ -12,12 +12,6 @@ const { HttpStatusCode } = require("../utils/http-statusCode");
 const { catchAsync } = require("../utils/try-catch.utils");
 const { updateQuantity } = require("../utils/product.util");
 
-/*
-    TODO: 
-        ·Hacer que cuando el producto este "outofstock"
-          le envie un correo al usuario al que le pertenece el producto
-          avisando que el producto esta dado de baja
-*/
 
 const addProductToCart = catchAsync(async( req, res = response, next ) => {
 
@@ -103,7 +97,6 @@ const purchaseCart = catchAsync(async( req, res = response, next ) => {
 
     const { sessionUser } = req
     const queryCart = { userId: sessionUser.id, status: 'active' }
-    const query = { status: 'concluded' }
 
     // Get the cart to know which products are active
     const cart = await Cart.findOne({ 
@@ -136,6 +129,8 @@ const purchaseCart = catchAsync(async( req, res = response, next ) => {
     await order.save()
 
     await cart.update({ status: 'done' })
+
+    // Send email with the order info()
 
     res.status( 200 ).json({
         order

@@ -1,10 +1,13 @@
 // Libraries
 const { response } = require("express");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage")
 // Models
 const { Product } = require("../models/product.model");
-const { Category } = require("../models/category.model");
+const { ProductImg } = require("../models/productImgs.model");
 // Utils
 const { catchAsync } = require("../utils/try-catch.utils");
+// firebase
+const { storage } = require("../firebase/firebase.config");
 
 const getAllActiveProducts = catchAsync(async( req, res = response, next ) => {
 
@@ -19,8 +22,8 @@ const getAllActiveProducts = catchAsync(async( req, res = response, next ) => {
             offset,
             limit,
             include: [{
-                model: Category,
-                attributes: [ 'id', 'name' ]
+                model: ProductImg,
+                attributes: [ 'id', 'imgUrl' ]
             }]
         })
     ])
@@ -41,11 +44,31 @@ const getActiveProduct = catchAsync(( req, res = response, next ) => {
 
 const createProduct = catchAsync( async( req, res = response, next ) => {
 
-    const { ...props } = req.body
+    const imgs = req.files
     const { sessionUser } = req
+    const { ...props } = req.body
 
+    const imgsPath = 'productsImgs'
+    let imgRef
+    let imgRes
+
+    // Create the new product
     const newProduct = await Product.build({ ...props, userId: sessionUser.id })
-    newProduct.save()
+    await newProduct.save()
+
+    // Save the upload imgs and create productImg with the fullpath image
+    const filesPromises = imgs.map( async img => {
+        imgRef = ref( storage, `${imgsPath}/${ Date.now() }_${ img.originalname }` )
+        imgRes = await uploadBytes( imgRef, img.buffer )
+        const fullpath = await getDownloadURL(imgRef)
+
+        return await ProductImg.create({ 
+            productId: newProduct.id,
+            imgUrl: fullpath
+        })
+    })
+    await Promise.all( filesPromises )
+    
 
     res.status( 200 ).json({
         newProduct

@@ -18,6 +18,7 @@ const ProductImg = db.define( 'productImg', {
     status: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'active',
         validate: {
             isIn: [[ 'active' ]]
         }
