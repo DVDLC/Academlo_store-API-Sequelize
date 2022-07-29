@@ -1,5 +1,8 @@
 // env
 require( 'dotenv' ).config()
+const { default: helmet } = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 // Libraries
 const express = require('express')
 const cors = require('cors')
@@ -10,7 +13,8 @@ const { dbRelations } = require('./db/db.relations')
 // Utils
 const { ApiError } = require('./utils/app-error-handler')
 const { globalErrorHandler } = require('./utils/globalerror-handler')
-const { HttpStatusCode } = require('./utils/http-statusCode')
+const { HttpStatusCode } = require('./utils/http-statusCode');
+
 
 class Server{
     constructor(){
@@ -52,6 +56,16 @@ class Server{
 
         // Serving static files
         this.app.use( express.static( 'public' ) )
+
+        // Add security headers & compression the middlewares
+        if( process.env.NODE_ENV === 'production' ){
+            this.app.use( helmet() )
+            this.app.use( compression() )
+            // log incomming request
+            this.app.use( morgan('combined') )
+        }else{
+            this.app.use( morgan('dev') )
+        }        
     }
 
     routes(){
